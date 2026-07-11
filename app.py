@@ -32,7 +32,7 @@ z_threshold = st.sidebar.slider(
 # 2. 데이터 수집 (OpenSky API)
 # -----------------------------------------------------------
 def get_flight_data():
-    url = "https://opensky-network.org/api/states/all&quot;
+    url = "https://opensky-network.org/api/states/all"
     params = {"lamin": 33.0, "lamax": 39.0, "lomin": 124.0, "lomax": 132.0}
     try:
         response = requests.get(url, params=params, timeout=10)
