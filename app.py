@@ -29,7 +29,8 @@ z_threshold = st.sidebar.slider(
 # -----------------------------------------------------------
 def get_flight_data():
     url = "https://opensky-network.org/api/states/all"
-    params = {"lamin": 33.0, "lamax": 39.0, "lomin": 124.0, "lomax": 132.0}
+    # 대한민국 전역을 포함하는 위경도 바운딩 박스
+    params = {"lamin": 33.0, "lamax": 43.0, "lomin": 124.0, "lomax": 132.0}
     
     try:
         api_user = st.secrets["OPENSKY_USERNAME"]
@@ -104,7 +105,8 @@ def render_dashboard():
         # -----------------------------------------------------------
         # [3번 기능] Pydeck IconLayer 적용 (방향 회전 포함)
         # -----------------------------------------------------------
-        view_state = pdk.ViewState(latitude=36.0, longitude=128.0, zoom=6.5, pitch=40)
+        # 한국 전체가 보이도록 위도와 줌 레벨 조정
+        view_state = pdk.ViewState(latitude=37.5, longitude=128.0, zoom=6.0, pitch=40)
 
         layer = pdk.Layer(
             "IconLayer",
@@ -134,7 +136,7 @@ def render_dashboard():
             layers=[layer],
             initial_view_state=view_state,
             tooltip=tooltip,
-            map_style="mapbox://styles/mapbox/dark-v10" # 더욱 깔끔한 관제창 스타일의 다크맵
+            map_style="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json" # Mapbox API 키 없이 사용 가능한 CartoDB 다크 모드 지도
         )
 
         st.pydeck_chart(r)
