@@ -35,13 +35,21 @@ def get_flight_data():
     url = "https://opensky-network.org/api/states/all"
     params = {"lamin": 33.0, "lamax": 39.0, "lomin": 124.0, "lomax": 132.0}
     try:
-        response = requests.get(url, params=params, timeout=10)
+        # 🔒 Streamlit Secrets에 저장된 인증 정보를 안전하게 읽어옵니다.
+        api_user = st.secrets["OPENSKY_USERNAME"]
+        api_password = st.secrets["OPENSKY_PASSWORD"]
+        
+        # auth 인자에 (아이디, 비밀번호)를 넣어 인증된 요청을 보냅니다.
+        response = requests.get(
+            url, 
+            params=params, 
+            timeout=20, 
+            auth=(api_user, api_password)
+        )
+        
         data = response.json()
         if data is not None and data.get("states") is not None:
             return data["states"]
-        return []
-    except Exception as e:
-        st.error(f"데이터를 가져오는 중 오류가 발생했습니다: {e}")
         return []
 
 raw_data = get_flight_data()
