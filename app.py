@@ -86,12 +86,14 @@ def render_dashboard():
         # [3번 기능 개선] 상태에 따른 색상 데이터 지정 (빨간색 투명도 조정, 크기 조정)
         def assign_color_data(status):
             if status == '위험(급강하)':
-                # 빨간색 비행기 아이콘 매핑 (오픈소스 이미지 주소 활용, 투명도 추가)
-                return {"url": "https://img.icons8.com/isometric/100/fa3131/airplane-mode-on.png", "width": 128, "height": 128, "anchorY": 64, "color": [255, 0, 0, 200]}
+                # 빨간색 비행기 아이콘 매핑 (오픈소스 이미지 주소 활용)
+                return {"url": "https://img.icons8.com/isometric/100/fa3131/airplane-mode-on.png", "width": 128, "height": 128, "anchorY": 64, "status_color": [255, 0, 0, 200]}
             # 노란색 비행기 아이콘 매핑
-            return {"url": "https://img.icons8.com/isometric/100/fab005/airplane-mode-on.png", "width": 128, "height": 128, "anchorY": 64, "color": [255, 176, 5, 200]}
+            return {"url": "https://img.icons8.com/isometric/100/fab005/airplane-mode-on.png", "width": 128, "height": 128, "anchorY": 64, "status_color": [255, 176, 5, 200]}
 
-        df['icon_data'] = df['status'].apply(assign_color_data)
+        icon_data_list = df['status'].apply(assign_color_data)
+        df['icon_data'] = icon_data_list
+        df['status_color'] = icon_data_list.apply(lambda x: x['status_color']) # status_color 열을 따로 생성
 
         # 사이드바 대시보드 정보 업데이트
         diving_count = len(df[df['status'] == '위험(급강하)'])
@@ -115,6 +117,7 @@ def render_dashboard():
             get_size=40,                 # 아이콘 크기 (약간 줄임)
             pickable=True,
             get_angle="-true_track",     # 항공기 진행 방향 각도만큼 아이콘 회전
+            get_color="status_color"     # 수정된 부분: get_color 속성에 status_color 열을 지정하여 아이콘 색상 설정
         )
 
         tooltip = {
